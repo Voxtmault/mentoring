@@ -19,9 +19,9 @@ jobs:
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           format: markdown
           message: |
-            *New Commit*
-            Repository: *${{ github.repository }}*/*${{ github.ref_name }}*
-            Application: *Crossnet Backend Mentoring Repository*
-            Author: ${{ github.event.head_commit.author.name }}
-            Timestamp: ${{ github.event.head_commit.timestamp }}
+            *${{ github.event.head_commit.author.username }}* pushed a new commit to *${{ github.repository }}*.
+            Branch: *${{ github.ref_name }}*
             Message: ${{ github.event.head_commit.message }}
+
+            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+            Timestamp: ${{ github.event.head_commit.timestamp }}
