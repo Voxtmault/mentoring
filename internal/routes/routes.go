@@ -72,6 +72,7 @@ func Init(cfg *config.AppConfig) (*echo.Echo, error) {
 	}))
 	e.Use(echoprometheus.NewMiddleware("fruit_store"))
 
+	// /api/v1
 	root := e.Group(cfg.AppRoot)
 	startTime = time.Now()
 
@@ -85,6 +86,7 @@ func Init(cfg *config.AppConfig) (*echo.Echo, error) {
 	root.GET("/metrics", echoprometheus.NewHandler())
 
 	// Register business routes
+	userRoute(root)
 
 	return e, nil
 }
