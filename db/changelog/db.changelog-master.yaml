@@ -1,5 +1,0 @@
-databaseChangeLog:
-# - includeAll: # Create the helper table first
-#     path: db/changelog/helper
-- include:
-    file: db/changelog/users.sql
