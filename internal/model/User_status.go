@@ -8,7 +8,7 @@ import (
 	class "tutor_rest/internal/class"
 )
 
-func AddStock(nama string, jumlah int, harga float32) (class.Response, error) {
+func AddUserStatus(status, detail string) (class.Response, error) {
 	// database
 	con, err := db.DbConnection()
 	if err != nil {
@@ -30,13 +30,13 @@ func AddStock(nama string, jumlah int, harga float32) (class.Response, error) {
 	}()
 
 	query := `
-	INSERT INTO stock (fruit_name, quantity, price_per_unit) 
-	VALUES (?,?,?)
+	INSERT INTO user_status (status, detail) 
+	VALUES (?,?)
 	`
-	_, err = tx.Exec(query, nama, jumlah, harga)
+	_, err = tx.Exec(query, status, detail)
 	if err != nil {
-		log.Printf("Failed to insert stock: %v\n", err)
-		return class.Response{Status: http.StatusInternalServerError, Message: "Failed to insert stock", Data: nil}, err
+		log.Printf("Failed to insert user status: %v\n", err)
+		return class.Response{Status: http.StatusInternalServerError, Message: "Failed to insert user status", Data: nil}, err
 	}
 
 	if err = tx.Commit(); err != nil {
@@ -44,10 +44,10 @@ func AddStock(nama string, jumlah int, harga float32) (class.Response, error) {
 		return class.Response{Status: http.StatusInternalServerError, Message: "Failed to commit transaction", Data: nil}, err
 	}
 
-	return class.Response{Status: http.StatusCreated, Message: "Stock added successfully", Data: nil}, nil
+	return class.Response{Status: http.StatusCreated, Message: "User status added successfully", Data: nil}, nil
 }
 
-func EditStock(id int, nama string, jumlah int, harga float32) (class.Response, error) {
+func EditUserStatus(id int, status, detail string) (class.Response, error) {
 	// database
 	con, err := db.DbConnection()
 	if err != nil {
@@ -69,14 +69,14 @@ func EditStock(id int, nama string, jumlah int, harga float32) (class.Response, 
 	}()
 
 	query := `
-	UPDATE stock
-	SET fruit_name = ?, quantity = ?, price_per_unit = ? 
-	WHERE stock_id = ?
+	UPDATE user_status
+	SET status = ?, detail = ? 
+	WHERE id = ?
 	`
-	_, err = tx.Exec(query, nama, jumlah, harga, id)
+	_, err = tx.Exec(query, status, detail, id)
 	if err != nil {
-		log.Printf("Failed to update stock: %v\n", err)
-		return class.Response{Status: http.StatusInternalServerError, Message: "Failed to update stock", Data: nil}, err
+		log.Printf("Failed to insert user status: %v\n", err)
+		return class.Response{Status: http.StatusInternalServerError, Message: "Failed to update user status", Data: nil}, err
 	}
 
 	if err = tx.Commit(); err != nil {
@@ -84,11 +84,11 @@ func EditStock(id int, nama string, jumlah int, harga float32) (class.Response, 
 		return class.Response{Status: http.StatusInternalServerError, Message: "Failed to commit transaction", Data: nil}, err
 	}
 
-	return class.Response{Status: http.StatusOK, Message: "Stock updated successfully", Data: nil}, nil
+	return class.Response{Status: http.StatusOK, Message: "User status updated successfully", Data: nil}, nil
 }
 
-func GetStockById(id int) (class.Response, error) {
-	var obj class.Stock
+func GetUserStatusById(id int) (class.Response, error) {
+	var obj class.UserStatus
 
 	// database
 	con, err := db.DbConnection()
@@ -100,25 +100,25 @@ func GetStockById(id int) (class.Response, error) {
 
 	query := `
 	SELECT *
-	FROM stock
-	WHERE stock_id = ?
+	FROM user_status
+	WHERE id = ?
 	`
 	row := con.QueryRow(query, id)
-	err = row.Scan(&obj.ID, &obj.FruitName, &obj.Quantity, &obj.PricePerUnit, &obj.Created_at, &obj.Updated_at)
+	err = row.Scan(&obj.ID, &obj.Status, &obj.Detail, &obj.Created_at, &obj.Updated_at)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			log.Printf("No stock found with ID %d\n", id)
-			return class.Response{Status: http.StatusNotFound, Message: "Stock not found", Data: nil}, nil
+			log.Printf("No user status found with ID %d\n", id)
+			return class.Response{Status: http.StatusNotFound, Message: "User status not found", Data: nil}, nil
 		}
-		log.Printf("Failed to scan stock: %v\n", err)
-		return class.Response{Status: http.StatusInternalServerError, Message: "Failed to retrieve stock", Data: nil}, err
+		log.Printf("Failed to scan user status: %v\n", err)
+		return class.Response{Status: http.StatusInternalServerError, Message: "Failed to retrieve user status", Data: nil}, err
 	}
 
-	return class.Response{Status: http.StatusOK, Message: "Stock retrieved successfully", Data: obj}, nil
+	return class.Response{Status: http.StatusOK, Message: "User status retrieved successfully", Data: obj}, nil
 }
 
-func GetAllStock() (class.Response, error) {
-	var stockList []class.Stock
+func GetAllUserStatus() (class.Response, error) {
+	var statusList []class.UserStatus
 
 	// database
 	con, err := db.DbConnection()
@@ -130,38 +130,38 @@ func GetAllStock() (class.Response, error) {
 
 	query := `
 	SELECT *
-	FROM stock
+	FROM user_status
 	`
 	rows, err := con.Query(query)
 	if err != nil {
 		log.Printf("Failed to execute query: %v\n", err)
-		return class.Response{Status: http.StatusInternalServerError, Message: "Failed to retrieve stock", Data: nil}, err
+		return class.Response{Status: http.StatusInternalServerError, Message: "Failed to retrieve user status", Data: nil}, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var stock class.Stock
-		err := rows.Scan(&stock.ID, &stock.FruitName, &stock.Quantity, &stock.PricePerUnit, &stock.Created_at, &stock.Updated_at)
+		var status class.UserStatus
+		err := rows.Scan(&status.ID, &status.Status, &status.Detail, &status.Created_at, &status.Updated_at)
 		if err != nil {
 			log.Printf("Failed to scan row: %v\n", err)
-			return class.Response{Status: http.StatusInternalServerError, Message: "Failed to process stock", Data: nil}, err
+			return class.Response{Status: http.StatusInternalServerError, Message: "Failed to process user status", Data: nil}, err
 		}
-		stockList = append(stockList, stock)
+		statusList = append(statusList, status)
 	}
 
 	if err = rows.Err(); err != nil {
 		log.Printf("Error occurred during row iteration: %v\n", err)
-		return class.Response{Status: http.StatusInternalServerError, Message: "Failed to retrieve stock", Data: nil}, err
+		return class.Response{Status: http.StatusInternalServerError, Message: "Failed to retrieve user status", Data: nil}, err
 	}
 
-	if len(stockList) == 0 {
-		return class.Response{Status: http.StatusNotFound, Message: "No stock found", Data: nil}, nil
+	if len(statusList) == 0 {
+		return class.Response{Status: http.StatusNotFound, Message: "No user status found", Data: nil}, nil
 	}
 
-	return class.Response{Status: http.StatusOK, Message: "Stock retrieved successfully", Data: stockList}, nil
+	return class.Response{Status: http.StatusOK, Message: "User status retrieved successfully", Data: statusList}, nil
 }
 
-func DeleteStockById(id int) (class.Response, error) {
+func DeleteUserStatusById(id int) (class.Response, error) {
 	// database
 	con, err := db.DbConnection()
 	if err != nil {
@@ -182,13 +182,13 @@ func DeleteStockById(id int) (class.Response, error) {
 		}
 	}()
 
-	query := `DELETE FROM stock WHERE stock_id = ?`
+	query := `DELETE FROM user_status WHERE id = ?`
 
 	result, err := tx.Exec(query, id)
 	if err != nil {
 		log.Printf("Failed to execute delete query: %v\n", err)
 		tx.Rollback()
-		return class.Response{Status: http.StatusInternalServerError, Message: "Failed to delete stock", Data: nil}, err
+		return class.Response{Status: http.StatusInternalServerError, Message: "Failed to delete user status", Data: nil}, err
 	}
 
 	rowsAffected, err := result.RowsAffected()
@@ -198,7 +198,7 @@ func DeleteStockById(id int) (class.Response, error) {
 	}
 
 	if rowsAffected == 0 {
-		return class.Response{Status: http.StatusNotFound, Message: "Stock not found", Data: nil}, nil
+		return class.Response{Status: http.StatusNotFound, Message: "User status not found", Data: nil}, nil
 	}
 
 	if err = tx.Commit(); err != nil {
@@ -206,5 +206,5 @@ func DeleteStockById(id int) (class.Response, error) {
 		return class.Response{Status: http.StatusInternalServerError, Message: "Failed to commit transaction", Data: nil}, err
 	}
 
-	return class.Response{Status: http.StatusOK, Message: "Stock deleted successfully", Data: nil}, nil
+	return class.Response{Status: http.StatusOK, Message: "User status deleted successfully"}, nil
 }

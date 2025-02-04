@@ -4,11 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"log"
+	"os"
 	"strconv"
 	"time"
-	"os"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var OpenCon = 0
@@ -22,12 +23,12 @@ func DbClose(con *sql.DB) {
 
 func DbConnection() (*sql.DB, error) {
 	username := os.Getenv("DB_USERNAME")
-	// password := os.Getenv("DB_PASSWORD")
+	password := os.Getenv("DB_PASSWORD")
 	hostname := os.Getenv("DB_HOSTNAME")
 	port := os.Getenv("DB_PORT")
 	dbname := os.Getenv("DB_NAME")
 
-	connectionString := username + ":" + "@tcp(" + hostname + ":" + port + ")/" + dbname + "?parseTime=true"
+	connectionString := username + ":" + password + "" + "@tcp(" + hostname + ":" + port + ")/" + dbname + "?parseTime=true"
 	db, err := sql.Open("mysql", connectionString)
 	if err != nil {
 		log.Printf("Error %s when opening DB\n", err)

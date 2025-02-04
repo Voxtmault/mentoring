@@ -17,38 +17,67 @@ func Init() *echo.Echo {
 
 	api := e.Group("/api")
 
-	api.POST("/users/login", controller.LoginUser)               
-	api.POST("/users", controller.AddUser)                 
+	api.POST("/users/login", controller.LoginUser)
+	api.POST("/users", controller.AddUser)
 
+	// user
 	userRoutes := api.Group("/users")
 	userRoutes.Use(middlewares.CheckAPIKey)
 
-	userRoutes.GET("", controller.GetAllUsers)       
-	userRoutes.GET("/:id", controller.GetUserByID)    
+	userRoutes.GET("", controller.GetAllUsers)
+	userRoutes.GET("/:id", controller.GetUserByID)
 	userRoutes.PUT("/:id", controller.UpdateUser)
-	userRoutes.DELETE("/:id", controller.DeleteUser)             
+	userRoutes.DELETE("/:id", controller.DeleteUser)
 
-	userRoutes.GET("/transactions", controller.GetUserTransactions) 
+	// user status
+	userRoutes.GET("/status", controller.GetAllUserStatus)
+	userRoutes.GET("/status/:id", controller.GetUserStatusById)
+	userRoutes.PUT("/status/:id", controller.UpdateUserStatus)
+	userRoutes.DELETE("/status/:id", controller.DeleteUserStatusById)
 
-	userRoutes.GET("/suppliers", controller.ListSuppliers)          
-	userRoutes.GET("/stock", controller.ViewStock)                        
-	userRoutes.PUT("/stock/:id", controller.UpdateStock)                  
-	userRoutes.POST("/transactions", controller.AddTransaction)           
-	userRoutes.POST("/purchases", controller.AddPurchaseFromSupplier)     
+	// user role
+	userRoutes.GET("/role", controller.GetAllUserRole)
+	userRoutes.GET("/role/:id", controller.GetUserRoleById)
+	userRoutes.PUT("/role/:id", controller.UpdateUserRole)
+	userRoutes.DELETE("/role/:id", controller.DeleteUserRoleById)
 
-	// Stock management routes
-	userRoutes.POST("/stock", controller.CreateStockItem)       
-	userRoutes.GET("/stock/:id", controller.GetStockItem)       
-	userRoutes.PUT("/stock/:id", controller.UpdateStockItem)    
-	userRoutes.DELETE("/stock/:id", controller.DeleteStockItem) 
+	// user transaction
+	userRoutes.GET("/transactions/:id", controller.GetUserTransactions)
 
-	// Transaction routes
-	userRoutes.POST("/transactions", controller.CreateTransaction)       
-	userRoutes.GET("/transactions/:id", controller.GetTransaction)       
-	userRoutes.PUT("/transactions/:id", controller.UpdateTransaction)    
-	userRoutes.DELETE("/transactions/:id", controller.DeleteTransaction) 
+	// stock
+	stockRoutes := api.Group("/stock")
+	stockRoutes.Use(middlewares.CheckAPIKey)
+	stockRoutes.GET("", controller.GetAllStockItem)
+	stockRoutes.GET("/:id", controller.GetStockItem)
+	stockRoutes.PUT("/:id", controller.UpdateStockItem)
+	stockRoutes.POST("", controller.CreateStockItem)
+	stockRoutes.DELETE("/:id", controller.DeleteStockItem)
+
+	// supplier
+	supplierRoutes := api.Group("/supplier")
+	supplierRoutes.Use(middlewares.CheckAPIKey)
+	supplierRoutes.GET("", controller.GetAllSupplier)
+	supplierRoutes.GET("/:id", controller.GetSupplierById)
+	supplierRoutes.PUT("/:id", controller.UpdateSupplier)
+	supplierRoutes.POST("", controller.CreateSupplier)
+	supplierRoutes.DELETE("/:id", controller.DeleteSupplier)
+
+	// Transaction
+	transactionRoutes := api.Group("/transaction")
+	transactionRoutes.Use(middlewares.CheckAPIKey)
+	transactionRoutes.GET("", controller.GetAllTransaction)
+	transactionRoutes.GET("/:id", controller.GetTransactionById)
+	transactionRoutes.GET("/detail/:id", controller.GetTransactionDetailedById)
+	transactionRoutes.PUT("/:id", controller.UpdateTransaction)
+	transactionRoutes.POST("", controller.CreateTransaction)
+	transactionRoutes.DELETE("/:id", controller.DeleteTransactionById)
+
+	// Transaction Status
+	transactionRoutes.GET("/status", controller.GetAllTransactionStatus)
+	transactionRoutes.GET("/status/:id", controller.GetTransactionStatusById)
+	transactionRoutes.PUT("/status/:id", controller.UpdateTransactionStatus)
+	transactionRoutes.POST("/status", controller.CreateTransactionStatus)
+	transactionRoutes.DELETE("/status/:id", controller.DeleteTransactionStatusById)
 
 	return e
 }
-
-
