@@ -95,3 +95,9 @@ type UserStatus struct {
 	Created_at string `json:"created_at"`
 	Updated_at string `json:"updated_at"`
 }
+
+type Karyawan struct {
+	ID       int    `json:"id"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+}

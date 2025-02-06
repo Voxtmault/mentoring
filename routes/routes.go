@@ -79,5 +79,9 @@ func Init() *echo.Echo {
 	transactionRoutes.POST("/status", controller.CreateTransactionStatus)
 	transactionRoutes.DELETE("/status/:id", controller.DeleteTransactionStatusById)
 
+	// file
+	api.GET("", controller.GetFile)
+	api.POST("/file", controller.UploadFile)
+	api.POST("/multifile", controller.UploadMultipleFile)
 	return e
 }
