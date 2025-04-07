@@ -1,0 +1,44 @@
+services:
+  main-db:
+    image: mariadb:latest
+    container_name: library-main-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 3306:3306
+    volumes:
+      - main_db_data:/var/lib/mysql
+      - "./my.cnf:/etc/mysql/conf.d/my.cnf" 
+    networks:
+      - library_network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: library-phpmyadmin
+    restart: unless-stopped
+    ports:
+      - 8080:80
+    environment:
+    # - PMA_ARBITRARY=1 # Allow phpmyadmin to change it's db source
+      PMA_HOSTS: main-db
+      PMA_USER: root
+      PMA_PASSWORD: root
+    networks:
+      - library_network
+    depends_on:
+      - main-db
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+volumes:
+  main_db_data:
+
+networks:
+  library_network:
+    external: false

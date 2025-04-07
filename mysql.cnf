@@ -1,0 +1,3 @@
+# Additional Config for MariaDB / MySQL
+[mysqld]
+innodb=ON
