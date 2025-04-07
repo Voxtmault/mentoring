@@ -1,19 +1,22 @@
 package models
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 
 	"github.com/voxtmault/mentoring/library-project/pkg/pagination"
 )
 
 type User struct {
-	gorm.Model `gorm:"embedded"`
-	Username   string     `json:"username" gorm:"unique;not null"`
-	Email      string     `json:"email" gorm:"unique;not null"`
-	Password   string     `json:"password" gorm:"not null"`
-	Salt       string     `json:"salt" gorm:"not null"`
-	Address    []*Address `json:"address" gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
-	IsActive   bool       `json:"is_active" gorm:"default:true"`
+	gorm.Model  `gorm:"embedded"`
+	Username    string     `json:"username" gorm:"unique;not null"`
+	Email       string     `json:"email" gorm:"unique;not null"`
+	Password    string     `json:"-" gorm:"not null"`
+	Salt        string     `json:"-" gorm:"not null"`
+	Address     []*Address `json:"address" gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	IsValidated bool       `json:"is_validated" gorm:"default:true"`
+	ValidatedAt time.Time  `json:"validated_at" gorm:"default:null"`
 }
 
 type UserFilter struct {

@@ -51,12 +51,22 @@ type FileHandlingConfig struct {
 	UploadDir        string
 }
 
+type SecurityConfig struct {
+	AllowedCharacters string
+	MinPasswordLength int
+	SaltSize          int
+	IterationCount    int
+	KeySize           int
+	EncryptionKey     string
+}
+
 type AppConfig struct {
 	MariaDBConfig
 	RedisConfig
 	LoggingConfig
 	SSLConfig
 	FileHandlingConfig
+	SecurityConfig
 	AppMode                  string
 	AppLanguage              string
 	AppTimezone              string
@@ -112,6 +122,14 @@ func New(envPath string) *AppConfig {
 			MaxFileSize:      int64(getEnvAsInt("MAX_FILE_SIZE", 1024*20)), // 20 MB Max
 			AllowedExtension: getEnvAsSlice("ALLOWED_FILE_EXTENSIONS", []string{"jpg", "jpeg", "png"}, ","),
 			UploadDir:        getEnv("UPLOAD_DIR", "assets/vendors"),
+		},
+		SecurityConfig: SecurityConfig{
+			AllowedCharacters: getEnv("ALLOWED_CHARACTERS", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+,.?/:;{}[]~"),
+			MinPasswordLength: getEnvAsInt("MIN_PASSWORD_LENGTH", 16),
+			SaltSize:          getEnvAsInt("SALT_SIZE", 16),
+			IterationCount:    getEnvAsInt("ITERATION_COUNT", 4096),
+			KeySize:           getEnvAsInt("KEY_SIZE", 32),
+			EncryptionKey:     getEnv("ENCRYPTION_KEY", ""),
 		},
 		AppMode:                  getEnv("APP_MODE", "devs"),
 		AppLanguage:              getEnv("APP_LANG", "en"),

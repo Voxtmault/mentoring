@@ -78,7 +78,9 @@ func InitORM(con *sql.DB) (*gorm.DB, error) {
 			gormMysql.Config{
 				Conn: con,
 			},
-		), &gorm.Config{},
+		), &gorm.Config{
+			SkipDefaultTransaction: true,
+		},
 	)
 	if err != nil {
 		return nil, eris.Wrap(err, "failed to open gorm connection")
