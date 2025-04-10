@@ -5,7 +5,7 @@ This branch is dedicated for an example project. The theme for the project is a 
 Overall System:
 
 * Basic CRUD functions for Books, Users, Borrowing Books, and other related entities
-* Integrated File Handling
+* Integrated File Handling (Integrate with MinIO)
 * Role Based Access Control
 * Serve RESTful API
 * Serve gRPC API
@@ -16,7 +16,7 @@ Overall System:
 * Docker Compose for easier management of related containers
 * Unit Testing
 * Integration Testing
-* ORM Integration
+* ORM Integration (To help with query builder & Database Migration)
 
 Future Implementation:
 
@@ -24,6 +24,8 @@ Future Implementation:
 * Prometheus and Grafana Integration for Observability and Monitoring
 * Log Aggregation (probably using Loki)
 * CI / CD Implementation using Github Workflows paired with Docker Hub
+* Integrate Message Queueing (probably using Kafka) to simulate real-time data
+* Integrate Websocket for Chatting Feature
 
 ## Tech Stack
 
