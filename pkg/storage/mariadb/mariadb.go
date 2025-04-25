@@ -47,7 +47,8 @@ func Init(cfg *config.MariaDBConfig) (*sql.DB, error) {
 		MultiStatements:      cfg.MultiStatements,
 		Net:                  "tcp",
 		Params: map[string]string{
-			"charset": "utf8",
+			"charset":   "utf8",
+			"parseTime": "true",
 		},
 	}
 

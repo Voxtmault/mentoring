@@ -23,7 +23,10 @@ type UserService struct {
 // Ensure UserService implements the User interface
 var _ interfaces.User = (*UserService)(nil)
 
+// New initializes a new UserService instance and migrates the database
+// schema for User and Address models.
 func New(db *gorm.DB, cfg *config.AppConfig) *UserService {
+	db.AutoMigrate(&models.User{}, &models.Address{})
 	return &UserService{db: db, cfg: cfg}
 }
 
@@ -32,7 +35,7 @@ func (s *UserService) GetUsers(ctx context.Context, filter *models.UserFilter) (
 	data = make([]*models.User, 0)
 	var metadata pagination.PaginationMetadata
 
-	query := s.db.Model(&models.User{})
+	query := s.db.Model(&models.User{}).Preload("Address")
 
 	if filter.Username != "" {
 		query = query.Where("username LIKE ?", "%"+filter.Username+"%")
@@ -40,8 +43,8 @@ func (s *UserService) GetUsers(ctx context.Context, filter *models.UserFilter) (
 	if filter.Email != "" {
 		query = query.Where("email LIKE ?", "%"+filter.Email+"%")
 	}
-	if filter.IsActive != nil {
-		query = query.Where("is_active = ?", *filter.IsActive)
+	if filter.IsValidated != nil {
+		query = query.Where("is_validated = ?", *filter.IsValidated)
 	}
 
 	var totalRecords int64
@@ -54,7 +57,7 @@ func (s *UserService) GetUsers(ctx context.Context, filter *models.UserFilter) (
 	}
 
 	offset := (filter.PageNumber - 1) * filter.Limit
-	if err := query.Offset(int(offset)).Limit(int(filter.Limit)).Find(&data).Error; err != nil {
+	if err := query.Limit(int(filter.Limit)).Offset(int(offset)).Find(&data).Error; err != nil {
 		res.StatusCode = http.StatusInternalServerError
 		res.InternalErrorMessage = http_utility.GeneralError
 		res.ErrorStack = eris.Wrap(err, "failed to get users")
@@ -140,4 +143,10 @@ func (s *UserService) CreateUser(ctx context.Context, user *models.User) (res *h
 	res.Data = data
 
 	return
+}
+
+func (s *UserService) UpdateUser(ctx context.Context, user *models.User) (res *http_utility.HTTPResponse, data *models.User) {
+	res = http_utility.New(s.cfg)
+
+	return res, nil
 }

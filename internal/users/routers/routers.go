@@ -18,7 +18,7 @@ var (
 	startTime time.Time
 )
 
-func Init(db *gorm.DB) (*echo.Echo, error) {
+func Init(db *gorm.DB, cfg *config.AppConfig) (*echo.Echo, error) {
 
 	// init echo instance
 	e := echo.New()
@@ -38,10 +38,6 @@ func Init(db *gorm.DB) (*echo.Echo, error) {
 		Level: 6,
 	}))
 	e.Use(middleware.Decompress())
-
-	// init initial data
-	cfg := config.New("github.com/voxtmault/mentoring/library-project/envs/users/.env")
-
 	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogStatus:    true,
 		LogURI:       true,

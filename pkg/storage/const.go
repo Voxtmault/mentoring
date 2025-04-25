@@ -1,3 +1,3 @@
 package storage
 
-var MariaDBDriver = "mariadb"
+var MariaDBDriver = "mysql"

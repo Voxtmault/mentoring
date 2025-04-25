@@ -67,16 +67,14 @@ type AppConfig struct {
 	SSLConfig
 	FileHandlingConfig
 	SecurityConfig
-	AppMode                  string
-	AppLanguage              string
-	AppTimezone              string
-	AppPort                  string
-	GRPCPort                 string
-	AppHost                  string
-	AppRoot                  string
-	DebugMode                bool
-	AllowBalanceNegative     bool
-	WithdrawRequiresApproval bool
+	AppMode     string
+	AppLanguage string
+	AppTimezone string
+	AppPort     string
+	GRPCPort    string
+	AppHost     string
+	AppRoot     string
+	DebugMode   bool
 }
 
 func New(envPath string) *AppConfig {
@@ -131,16 +129,14 @@ func New(envPath string) *AppConfig {
 			KeySize:           getEnvAsInt("KEY_SIZE", 32),
 			EncryptionKey:     getEnv("ENCRYPTION_KEY", ""),
 		},
-		AppMode:                  getEnv("APP_MODE", "devs"),
-		AppLanguage:              getEnv("APP_LANG", "en"),
-		AppTimezone:              getEnv("APP_TIMEZONE", "Asia/Jakarta"),
-		AppPort:                  getEnv("APP_PORT", ""),
-		GRPCPort:                 getEnv("GRPC_PORT", ""),
-		AppHost:                  getEnv("APP_HOST", ""),
-		AppRoot:                  getEnv("APP_ROOT", "/api/v1"),
-		DebugMode:                getEnvAsBool("DEBUG", false),
-		AllowBalanceNegative:     getEnvAsBool("ALLOW_BALANCE_NEGATIVE", false),
-		WithdrawRequiresApproval: getEnvAsBool("WITHDRAW_REQUIRES_APPROVAL", true),
+		AppMode:     getEnv("APP_MODE", "devs"),
+		AppLanguage: getEnv("APP_LANG", "en"),
+		AppTimezone: getEnv("APP_TIMEZONE", "Asia/Jakarta"),
+		AppPort:     getEnv("APP_PORT", ""),
+		GRPCPort:    getEnv("GRPC_PORT", ""),
+		AppHost:     getEnv("APP_HOST", ""),
+		AppRoot:     getEnv("APP_ROOT", "/api/v1"),
+		DebugMode:   getEnvAsBool("DEBUG", false),
 	}
 
 	return config

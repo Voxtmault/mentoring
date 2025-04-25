@@ -44,7 +44,7 @@ func (r *HTTPResponse) Translate() {
 			r.Message = Messages.Successes[English][r.InternalMessage]
 		} else {
 			r.Message = Messages.Errors[English][r.InternalErrorMessage]
-			r.Error = eris.ToString(r.ErrorStack, true)
+			r.Error = eris.ToString(r.ErrorStack, false)
 		}
 	case Indonesian:
 		if r.ErrorStack == nil {
